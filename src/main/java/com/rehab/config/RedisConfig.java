@@ -1,4 +1,4 @@
-package com.rehab;
+package com.rehab.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
