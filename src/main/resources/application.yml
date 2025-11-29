@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://rehab-rds.czsqck68o4qy.ap-northeast-2.rds.amazonaws.com:3306
+    username: admin
+    password: wptelel!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update        # 개발 중이면 update/ create 등 선택
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  data:
+    redis:
+      host: my-cache-server   # 도커에서 쓰는 Redis 컨테이너 이름
+      port: 6379
+
+server:
+  port: 8080
