@@ -1,6 +1,6 @@
 package com.rehab.config;
 
-import com.rehab.domain.repository.UserRepository;
+import com.rehab.repository.UserRepository;
 import com.rehab.oauth.CustomOAuth2UserService;
 import com.rehab.oauth.OAuth2LoginSuccessHandler;
 import com.rehab.security.jwt.JwtAuthenticationFilter;
