@@ -1,4 +1,4 @@
-package com.rehab.repository;
+package com.rehab.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +9,9 @@ import java.util.Optional;
 
 import com.rehab.domain.entity.SymptomIntake;
 import com.rehab.domain.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * SymptomIntake Repository
@@ -39,4 +42,6 @@ public interface SymptomIntakeRepository extends JpaRepository<SymptomIntake, Lo
 	 */
 	@Query("SELECT COUNT(si) FROM SymptomIntake si WHERE si.user.userId = :userId")
 	long countByUserId(@Param("userId") Long userId);
+
+	Optional<SymptomIntake> findByUser(User user);
 }

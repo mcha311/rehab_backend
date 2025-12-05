@@ -1,4 +1,4 @@
-package com.rehab.repository;
+package com.rehab.domain.repository;
 
 import com.rehab.domain.entity.DailySummary;
 import org.springframework.data.jpa.repository.JpaRepository;

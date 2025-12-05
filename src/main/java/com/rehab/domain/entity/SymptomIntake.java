@@ -3,22 +3,19 @@ package com.rehab.domain.entity;
 import com.rehab.domain.entity.base.BaseEntity;
 import com.rehab.domain.entity.enums.ExerciseExperience;
 import com.rehab.domain.entity.enums.PainArea;
-
+import com.rehab.dto.intake.IntakeDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.*;
 
-/**
- * 문진(Symptom Intake) 정보 엔티티
- * 사용자의 통증 부위, 강도, 목표, 운동 경험 등을 저장
- */
 @Entity
 @Table(name = "symptom_intake")
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class SymptomIntake extends BaseEntity {
 
@@ -31,33 +28,26 @@ public class SymptomIntake extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	/**
-	 * 통증 부위
-	 */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "pain_area", length = 50)
 	private PainArea painArea;
 
-	/**
-	 * 통증 강도 (1-10)
-	 */
 	@Column(name = "pain_level")
 	private Integer painLevel;
 
-	/**
-	 * 재활 목표
-	 */
-	@Column(name = "goal", columnDefinition = "TEXT")
+	@Column(name = "goal")
 	private String goal;
 
-	/**
-	 * 운동 경험 수준
-	 */
 	@Enumerated(EnumType.STRING)
-	@Column(name = "exercise_experience", length = 30)
+	@Column(name = "exercise_experience", length = 50)
 	private ExerciseExperience exerciseExperience;
 
-	// === 비즈니스 메서드 ===
+	public void updateFromRequest(IntakeDto.IntakeRequest request) {
+		this.painArea = request.getPainArea();
+		this.painLevel = request.getPainLevel();
+		this.goal = request.getGoal();
+		this.exerciseExperience = request.getExerciseExperience();
+	}
 
 	/**
 	 * 문진 정보 업데이트
@@ -75,13 +65,6 @@ public class SymptomIntake extends BaseEntity {
 		if (exerciseExperience != null) {
 			this.exerciseExperience = exerciseExperience;
 		}
-	}
-
-	/**
-	 * 통증 강도가 유효한 범위인지 확인
-	 */
-	public boolean isValidPainLevel() {
-		return painLevel != null && painLevel >= 1 && painLevel <= 10;
 	}
 
 	/**

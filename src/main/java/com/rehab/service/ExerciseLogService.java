@@ -9,8 +9,8 @@ import com.rehab.domain.entity.enums.ExerciseLogStatus;
 import com.rehab.dto.request.CreateExerciseLogRequest;
 import com.rehab.dto.response.ExerciseLogListResponse;
 import com.rehab.dto.response.ExerciseLogResponse;
-import com.rehab.repository.ExerciseLogRepository;
-import com.rehab.repository.PlanItemRepository;
+import com.rehab.domain.repository.ExerciseLogRepository;
+import com.rehab.domain.repository.PlanItemRepository;
 import com.rehab.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.rehab.repository;
+package com.rehab.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
