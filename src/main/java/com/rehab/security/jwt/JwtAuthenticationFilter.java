@@ -1,7 +1,8 @@
 package com.rehab.security.jwt;
 
 import com.rehab.domain.entity.User;
-import com.rehab.repository.UserRepository;
+import com.rehab.domain.repository.UserRepository;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
