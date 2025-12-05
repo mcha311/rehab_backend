@@ -1,5 +1,6 @@
 package com.rehab.config;
 
+
 import com.rehab.domain.repository.UserRepository;
 import com.rehab.oauth.CustomOAuth2UserService;
 import com.rehab.oauth.OAuth2LoginSuccessHandler;
@@ -48,7 +49,8 @@ public class SecurityConfig {
 					"/oauth2/**",
 					"/swagger-ui/**",
 					"/swagger-ui.html",
-					"/v3/api-docs/**"
+					"/v3/api-docs/**",
+					"/api/**"
 				).permitAll()
 				.anyRequest().authenticated()
 			)

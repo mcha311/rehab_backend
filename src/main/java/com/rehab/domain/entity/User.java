@@ -1,11 +1,11 @@
 package com.rehab.domain.entity;
 
-import com.rehab.domain.entity.enums.LoginType;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.rehab.domain.entity.enums.LoginType;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.rehab.domain.entity.base.BaseEntity;
@@ -80,7 +80,11 @@ public class User extends BaseEntity {
 
 	// 연관관계
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<SymptomIntake> symptomIntakes = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RehabPlan> rehabPlans = new ArrayList<>();
 
@@ -148,5 +152,41 @@ public class User extends BaseEntity {
 		this.height = height;
 		this.weight = weight;
 		this.profileCompleted = true;
+	}
+
+	/**
+	 * 문진 정보 추가
+	 */
+	public void addSymptomIntake(SymptomIntake symptomIntake) {
+		this.symptomIntakes.add(symptomIntake);
+		// SymptomIntake 엔티티에 setUser 메서드가 있다면 설정
+		// symptomIntake.setUser(this);
+	}
+
+	/**
+	 * 가장 최근 문진 정보 조회
+	 */
+	public SymptomIntake getLatestSymptomIntake() {
+		if (symptomIntakes.isEmpty()) {
+			return null;
+		}
+		return symptomIntakes.stream()
+			.max(Comparator.comparing(SymptomIntake::getCreatedAt))
+			.orElse(null);
+	}
+
+	/**
+	 * 문진 완료 여부 확인
+	 */
+	public boolean hasCompletedIntake() {
+		SymptomIntake latest = getLatestSymptomIntake();
+		return latest != null && latest.isIntakeCompleted();
+	}
+
+	/**
+	 * 문진 이력이 있는지 확인
+	 */
+	public boolean hasIntakeHistory() {
+		return !symptomIntakes.isEmpty();
 	}
 }

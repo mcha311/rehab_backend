@@ -1,77 +1,138 @@
 package com.rehab.domain.entity;
 
-import java.time.LocalDate;
-
+import com.rehab.domain.entity.base.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.rehab.domain.entity.base.BaseEntity;
+import java.time.LocalDateTime;
+import java.util.Map;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+/**
+ * 일일 요약(Daily Summary) 엔티티
+ * 하루 단위 운동/복약 완료율, 통증 점수 등을 집계
+ */
 @Entity
-@Table(
-    name = "daily_summary",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "date"})
-    }
-)
+@Table(name = "daily_summary")
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class DailySummary extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "summary_id")
-    private Long summaryId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "summary_id")
+	private Long summaryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
+	@Column(name = "date", nullable = false)
+	private LocalDateTime date;
 
-    @Column(name = "all_exercises_completed")
-    @Builder.Default
-    private Boolean allExercisesCompleted = false;
+	/**
+	 * 모든 운동 완료 여부
+	 */
+	@Column(name = "all_exercises_completed")
+	private Boolean allExercisesCompleted;
 
-    @Column(name = "exercise_completion_rate")
-    @Builder.Default
-    private Integer exerciseCompletionRate = 0;
+	/**
+	 * 운동 완료율 (0-100%)
+	 */
+	@Column(name = "exercise_completion_rate")
+	private Integer exerciseCompletionRate;
 
-    @Column(name = "all_medications_taken")
-    @Builder.Default
-    private Boolean allMedicationsTaken = false;
+	/**
+	 * 모든 복약 완료 여부
+	 */
+	@Column(name = "all_medications_taken")
+	private Boolean allMedicationsTaken;
 
-    @Column(name = "medication_completion_rate")
-    @Builder.Default
-    private Integer medicationCompletionRate = 0;
+	/**
+	 * 복약 완료율 (0-100%)
+	 */
+	@Column(name = "medication_completion_rate")
+	private Integer medicationCompletionRate;
 
-    @Column(name = "avg_pain_score")
-    private Integer avgPainScore;
+	/**
+	 * 평균 통증 점수 (1-10)
+	 */
+	@Column(name = "avg_pain_score")
+	private Integer avgPainScore;
 
-    @Column(name = "total_duration_sec")
-    @Builder.Default
-    private Integer totalDurationSec = 0;
+	/**
+	 * 총 운동 시간 (초)
+	 */
+	@Column(name = "total_duration_sec")
+	private Integer totalDurationSec;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "daily_metrics", columnDefinition = "JSON")
-    private String dailyMetrics;
+	/**
+	 * 일일 메트릭스 (JSON)
+	 * 예: {"totalExercises": 3, "completedExercises": 3, "avgRpe": 5.0}
+	 */
+	@JdbcTypeCode(SqlTypes.JSON)
+	@Column(name = "daily_metrics", columnDefinition = "json")
+	private String  dailyMetrics;
+
+	// === 비즈니스 메서드 ===
+
+	/**
+	 * 운동 완료 여부 체크 (Streak 계산용)
+	 */
+	public boolean meetsExerciseCriteria() {
+		return exerciseCompletionRate != null && exerciseCompletionRate >= 60;
+	}
+
+	/**
+	 * 복약 완료 여부 체크 (Streak 계산용)
+	 */
+	public boolean meetsMedicationCriteria() {
+		return medicationCompletionRate != null && medicationCompletionRate >= 70;
+	}
+
+	/**
+	 * Streak 활동 기준 충족 여부
+	 * (운동 60% 이상 OR 복약 70% 이상)
+	 */
+	public boolean meetsStreakCriteria() {
+		return meetsExerciseCriteria() || meetsMedicationCriteria();
+	}
+
+	/**
+	 * DailySummary 업데이트
+	 */
+	public void updateSummary(
+		Boolean allExercisesCompleted,
+		Integer exerciseCompletionRate,
+		Boolean allMedicationsTaken,
+		Integer medicationCompletionRate,
+		Integer avgPainScore,
+		Integer totalDurationSec,
+		String dailyMetrics
+	) {
+		if (allExercisesCompleted != null) {
+			this.allExercisesCompleted = allExercisesCompleted;
+		}
+		if (exerciseCompletionRate != null) {
+			this.exerciseCompletionRate = exerciseCompletionRate;
+		}
+		if (allMedicationsTaken != null) {
+			this.allMedicationsTaken = allMedicationsTaken;
+		}
+		if (medicationCompletionRate != null) {
+			this.medicationCompletionRate = medicationCompletionRate;
+		}
+		if (avgPainScore != null) {
+			this.avgPainScore = avgPainScore;
+		}
+		if (totalDurationSec != null) {
+			this.totalDurationSec = totalDurationSec;
+		}
+		if (dailyMetrics != null) {
+			this.dailyMetrics = dailyMetrics;
+		}
+	}
 }
