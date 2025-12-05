@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,15 +39,23 @@ public class DailySummaryService {
 	private final ExerciseLogRepository exerciseLogRepository;
 	private final PlanItemRepository planItemRepository;
 	private final UserRepository userRepository;
+	private final StreakService streakService;
 	private final ObjectMapper objectMapper;
 
 	/**
 	 * 일일 요약 조회
+	 *
+	 * - 컨트롤러에서는 LocalDate(YYYY-MM-DD)로 받고
+	 * - 여기서는 해당 날짜의 0시(LocalDateTime)로 변환해서 조회
 	 */
 	public DailySummaryResponse getDailySummary(Long userId, LocalDate date) {
 		log.info("일일 요약 조회 - userId: {}, date: {}", userId, date);
 
-		DailySummary summary = dailySummaryRepository.findByUser_UserIdAndDate(userId, date)
+		LocalDateTime startOfDay = date.atStartOfDay();
+
+		// DailySummary.date 는 LocalDateTime(하루의 시작 시각)이라고 가정
+		DailySummary summary = dailySummaryRepository
+			.findByUser_UserIdAndDate(userId, startOfDay)
 			.orElseThrow(() -> new RehabPlanException(ErrorStatus.DAILY_SUMMARY_NOT_FOUND));
 
 		return convertToDailySummaryResponse(summary);
@@ -53,19 +63,29 @@ public class DailySummaryService {
 
 	/**
 	 * 일일 요약 업데이트 (운동 로그 생성 시 호출)
+	 *
+	 * - loggedAt(LocalDateTime)을 기준으로 해당 "하루" 범위를 계산해서 로그 집계
 	 */
 	@Transactional
-	public void updateDailySummary(Long userId, LocalDate date) {
-		log.info("일일 요약 업데이트 - userId: {}, date: {}", userId, date);
+	public void updateDailySummary(Long userId, LocalDateTime dateTime) {
+		log.info("일일 요약 업데이트 - userId: {}, dateTime: {}", userId, dateTime);
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new RehabPlanException(ErrorStatus.USER_NOT_FOUND));
 
-		// 해당 날짜의 운동 로그 조회
-		List<ExerciseLog> logs = exerciseLogRepository.findByUserIdAndDate(userId, date);
+		// 기준 날짜 (연속성/스트릭은 날짜 단위)
+		LocalDate targetDate = dateTime.toLocalDate();
+		LocalDateTime startOfDay = targetDate.atStartOfDay();
+		LocalDateTime endOfDay = targetDate.atTime(LocalTime.MAX);
+
+		// 해당 날짜 범위의 운동 로그 조회
+		// 👉 ExerciseLogRepository 에 아래 메서드가 있어야 함:
+		// List<ExerciseLog> findByUser_UserIdAndLoggedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
+		List<ExerciseLog> logs = exerciseLogRepository
+			.findByUser_UserIdAndLoggedAtBetween(userId, startOfDay, endOfDay);
 
 		if (logs.isEmpty()) {
-			log.warn("운동 로그가 없어 일일 요약을 업데이트하지 않습니다.");
+			log.warn("운동 로그가 없어 일일 요약을 업데이트하지 않습니다. userId: {}, date: {}", userId, targetDate);
 			return;
 		}
 
@@ -114,22 +134,28 @@ public class DailySummaryService {
 
 		String dailyMetricsJson = convertToJson(dailyMetrics);
 
+		// 복약 완료율 (현재는 0, 추후 구현)
+		int medicationCompletionRate = 0;
+
 		// 일일 요약 조회 또는 생성
-		DailySummary summary = dailySummaryRepository.findByUser_UserIdAndDate(userId, date)
+		// DailySummary.date = 해당 날짜의 00:00:00(LocalDateTime)
+		DailySummary summary = dailySummaryRepository
+			.findByUser_UserIdAndDate(userId, startOfDay)
 			.orElseGet(() -> DailySummary.builder()
 				.user(user)
-				.date(date)
-				.build());
+				.date(startOfDay)
+				.build()
+			);
 
-		// 업데이트 (새로운 객체 생성)
+		// 업데이트 (새로운 객체 생성, 기존 summaryId 유지)
 		DailySummary updatedSummary = DailySummary.builder()
 			.summaryId(summary.getSummaryId())
 			.user(user)
-			.date(date)
+			.date(startOfDay)
 			.allExercisesCompleted(allExercisesCompleted)
 			.exerciseCompletionRate(exerciseCompletionRate)
 			.allMedicationsTaken(false) // 복약 정보는 추후 구현
-			.medicationCompletionRate(0) // 복약 완료율은 추후 구현
+			.medicationCompletionRate(medicationCompletionRate)
 			.avgPainScore((int) Math.round(avgPainScore))
 			.totalDurationSec(totalDurationSec)
 			.dailyMetrics(dailyMetricsJson)
@@ -138,6 +164,20 @@ public class DailySummaryService {
 		dailySummaryRepository.save(updatedSummary);
 
 		log.info("일일 요약 업데이트 완료 - summaryId: {}", updatedSummary.getSummaryId());
+
+		// Streak 업데이트 (날짜 단위로 처리)
+		try {
+			streakService.updateStreakFromDailySummary(
+				userId,
+				targetDate,
+				exerciseCompletionRate,
+				medicationCompletionRate
+			);
+			log.info("Streak 업데이트 완료 - userId: {}, date: {}", userId, targetDate);
+		} catch (Exception e) {
+			// Streak 업데이트 실패해도 일일 요약은 저장
+			log.error("Streak 업데이트 실패 - userId: {}, date: {}", userId, targetDate, e);
+		}
 	}
 
 	/**
@@ -147,14 +187,15 @@ public class DailySummaryService {
 		return DailySummaryResponse.builder()
 			.summaryId(summary.getSummaryId())
 			.userId(summary.getUser().getUserId())
-			.date(summary.getDate())
+			// DailySummary.date 가 LocalDateTime 이라면 toLocalDate()로 변환
+			.date(summary.getDate().toLocalDate())
 			.allExercisesCompleted(summary.getAllExercisesCompleted())
 			.exerciseCompletionRate(summary.getExerciseCompletionRate())
 			.allMedicationsTaken(summary.getAllMedicationsTaken())
 			.medicationCompletionRate(summary.getMedicationCompletionRate())
 			.avgPainScore(summary.getAvgPainScore())
 			.totalDurationSec(summary.getTotalDurationSec())
-			.dailyMetrics(parseJson(summary.getDailyMetrics()))
+			.dailyMetrics(parseJson(summary.getDailyMetrics().toString()))
 			.createdAt(summary.getCreatedAt())
 			.updatedAt(summary.getUpdatedAt())
 			.build();
@@ -187,10 +228,3 @@ public class DailySummaryService {
 		}
 	}
 }
-
-
-
-
-
-
-

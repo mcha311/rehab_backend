@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public interface DailySummaryRepository extends JpaRepository<DailySummary, Long
 	/**
 	 * 특정 날짜의 일일 요약 조회
 	 */
-	Optional<DailySummary> findByUser_UserIdAndDate(Long userId, LocalDate date);
+	Optional<DailySummary> findByUser_UserIdAndDate(Long userId, LocalDateTime date);
 
 	/**
 	 * 특정 기간의 일일 요약 조회
@@ -30,8 +31,8 @@ public interface DailySummaryRepository extends JpaRepository<DailySummary, Long
 		"ORDER BY ds.date DESC")
 	List<DailySummary> findByUserIdAndDateRange(
 		@Param("userId") Long userId,
-		@Param("startDate") LocalDate startDate,
-		@Param("endDate") LocalDate endDate
+		@Param("startDate") LocalDateTime startDate,
+		@Param("endDate") LocalDateTime endDate
 	);
 
 	/**
@@ -44,6 +45,16 @@ public interface DailySummaryRepository extends JpaRepository<DailySummary, Long
 	List<DailySummary> findRecentDays(
 		@Param("userId") Long userId,
 		@Param("days") int days
+	);
+
+	@Query("SELECT ds FROM DailySummary ds " +
+		"WHERE ds.user.userId = :userId " +
+		"AND ds.date BETWEEN :startDate AND :endDate " +
+		"ORDER BY ds.date ASC")
+	List<DailySummary> findByUserIdAndDateBetween(
+		@Param("userId") Long userId,
+		@Param("startDate") LocalDateTime startDate,
+		@Param("endDate") LocalDateTime endDate
 	);
 }
 

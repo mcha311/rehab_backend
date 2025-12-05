@@ -32,7 +32,7 @@ public class DailySummaryController {
 	@Operation(summary = "일일 요약 조회", description = "특정 날짜의 운동/복약 완료율 및 통증 요약을 조회합니다.")
 	public ApiResponse<DailySummaryResponse> getDailySummary(
 		@Parameter(description = "사용자 ID", required = true)
-		@RequestAttribute("userId") Long userId,
+		@RequestParam("userId") Long userId,
 
 		@Parameter(description = "조회할 날짜 (YYYY-MM-DD)", required = true)
 		@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
