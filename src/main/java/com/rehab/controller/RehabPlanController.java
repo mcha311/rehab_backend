@@ -4,7 +4,7 @@ import com.rehab.apiPayload.ApiResponse;
 import com.rehab.domain.entity.enums.PlanPhase;
 import com.rehab.dto.response.PlanItemListResponse;
 import com.rehab.dto.response.RehabPlanResponse;
-import com.rehab.service.RehabPlanService;
+import com.rehab.service.rehabPlan.RehabPlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

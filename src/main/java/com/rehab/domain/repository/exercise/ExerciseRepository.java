@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.exercise;
 
 import com.rehab.domain.entity.Exercise;
 import com.rehab.domain.entity.enums.Difficulty;

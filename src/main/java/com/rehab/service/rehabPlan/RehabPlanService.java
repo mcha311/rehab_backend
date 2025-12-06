@@ -1,4 +1,4 @@
-package com.rehab.service;
+package com.rehab.service.rehabPlan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,9 +13,9 @@ import com.rehab.domain.entity.enums.RehabPlanStatus;
 import com.rehab.dto.response.PlanItemListResponse;
 import com.rehab.dto.response.PlanItemResponse;
 import com.rehab.dto.response.RehabPlanResponse;
-import com.rehab.domain.repository.ExerciseLogRepository;
-import com.rehab.domain.repository.PlanItemRepository;
-import com.rehab.domain.repository.RehabPlanRepository;
+import com.rehab.domain.repository.exercise.ExerciseLogRepository;
+import com.rehab.domain.repository.plan.PlanItemRepository;
+import com.rehab.domain.repository.rehab.RehabPlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

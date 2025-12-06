@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.user;
 
 
 import com.rehab.domain.entity.User;

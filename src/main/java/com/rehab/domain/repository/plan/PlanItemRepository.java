@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.plan;
 
 import com.rehab.domain.entity.PlanItem;
 import com.rehab.domain.entity.enums.PlanPhase;

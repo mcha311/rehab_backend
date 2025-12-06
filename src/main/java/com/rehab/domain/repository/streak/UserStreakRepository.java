@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.streak;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

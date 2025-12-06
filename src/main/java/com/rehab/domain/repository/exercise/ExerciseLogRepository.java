@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.exercise;
 
 import com.rehab.domain.entity.ExerciseLog;
 import org.springframework.data.jpa.repository.JpaRepository;

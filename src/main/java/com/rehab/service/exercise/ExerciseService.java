@@ -1,4 +1,4 @@
-package com.rehab.service;
+package com.rehab.service.exercise;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,7 +9,7 @@ import com.rehab.domain.entity.Exercise;
 import com.rehab.domain.entity.ExerciseImage;
 import com.rehab.domain.entity.ExerciseMedia;
 import com.rehab.dto.response.ExerciseDetailResponse;
-import com.rehab.domain.repository.ExerciseRepository;
+import com.rehab.domain.repository.exercise.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

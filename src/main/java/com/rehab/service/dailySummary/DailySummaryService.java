@@ -1,4 +1,4 @@
-package com.rehab.service;
+package com.rehab.service.dailySummary;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,11 +9,13 @@ import com.rehab.domain.entity.DailySummary;
 import com.rehab.domain.entity.ExerciseLog;
 import com.rehab.domain.entity.PlanItem;
 import com.rehab.domain.entity.User;
-import com.rehab.domain.repository.UserRepository;
+import com.rehab.domain.repository.user.UserRepository;
 import com.rehab.dto.response.DailySummaryResponse;
-import com.rehab.domain.repository.DailySummaryRepository;
-import com.rehab.domain.repository.ExerciseLogRepository;
-import com.rehab.domain.repository.PlanItemRepository;
+import com.rehab.domain.repository.dailySummary.DailySummaryRepository;
+import com.rehab.domain.repository.exercise.ExerciseLogRepository;
+import com.rehab.domain.repository.plan.PlanItemRepository;
+import com.rehab.service.streak.StreakService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

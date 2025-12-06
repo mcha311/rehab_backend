@@ -1,4 +1,4 @@
-package com.rehab.service;
+package com.rehab.service.exercise;
 
 import com.rehab.apiPayload.code.status.ErrorStatus;
 import com.rehab.apiPayload.exception.RehabPlanException;
@@ -6,12 +6,13 @@ import com.rehab.domain.entity.ExerciseLog;
 import com.rehab.domain.entity.PlanItem;
 import com.rehab.domain.entity.User;
 import com.rehab.domain.entity.enums.ExerciseLogStatus;
-import com.rehab.domain.repository.UserRepository;
+import com.rehab.domain.repository.user.UserRepository;
 import com.rehab.dto.request.CreateExerciseLogRequest;
 import com.rehab.dto.response.ExerciseLogListResponse;
 import com.rehab.dto.response.ExerciseLogResponse;
-import com.rehab.domain.repository.ExerciseLogRepository;
-import com.rehab.domain.repository.PlanItemRepository;
+import com.rehab.domain.repository.exercise.ExerciseLogRepository;
+import com.rehab.domain.repository.plan.PlanItemRepository;
+import com.rehab.service.dailySummary.DailySummaryService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

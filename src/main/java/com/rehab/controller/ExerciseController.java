@@ -2,7 +2,7 @@ package com.rehab.controller;
 
 import com.rehab.apiPayload.ApiResponse;
 import com.rehab.dto.response.ExerciseDetailResponse;
-import com.rehab.service.ExerciseService;
+import com.rehab.service.exercise.ExerciseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

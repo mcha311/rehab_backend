@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.remind;
 
 import com.rehab.domain.entity.Reminder;
 import com.rehab.domain.entity.User;

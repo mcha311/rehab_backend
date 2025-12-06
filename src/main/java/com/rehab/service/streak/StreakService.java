@@ -1,15 +1,15 @@
-package com.rehab.service;
+package com.rehab.service.streak;
 
 import com.rehab.apiPayload.code.status.ErrorStatus;
 import com.rehab.apiPayload.exception.handler.UserHandler;
 import com.rehab.domain.entity.DailySummary;
 import com.rehab.domain.entity.User;
 import com.rehab.domain.entity.UserStreak;
-import com.rehab.domain.repository.UserRepository;
+import com.rehab.domain.repository.user.UserRepository;
 import com.rehab.dto.ActivityHistoryDto;
 import com.rehab.dto.response.StreakResponse;
-import com.rehab.domain.repository.DailySummaryRepository;
-import com.rehab.domain.repository.UserStreakRepository;
+import com.rehab.domain.repository.dailySummary.DailySummaryRepository;
+import com.rehab.domain.repository.streak.UserStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

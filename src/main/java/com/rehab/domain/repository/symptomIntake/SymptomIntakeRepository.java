@@ -1,4 +1,4 @@
-package com.rehab.domain.repository;
+package com.rehab.domain.repository.symptomIntake;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,9 +9,6 @@ import java.util.Optional;
 
 import com.rehab.domain.entity.SymptomIntake;
 import com.rehab.domain.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
 
 /**
  * SymptomIntake Repository
