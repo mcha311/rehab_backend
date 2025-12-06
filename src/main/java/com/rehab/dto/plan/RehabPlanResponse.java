@@ -1,4 +1,4 @@
-package com.rehab.dto.response;
+package com.rehab.dto.plan;
 
 import com.rehab.domain.entity.enums.RehabPlanStatus;
 import lombok.AllArgsConstructor;

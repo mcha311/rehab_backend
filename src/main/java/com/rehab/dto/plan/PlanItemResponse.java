@@ -1,4 +1,4 @@
-package com.rehab.dto.response;
+package com.rehab.dto.plan;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rehab.domain.entity.enums.PlanItemStatus;

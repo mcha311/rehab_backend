@@ -1,4 +1,4 @@
-package com.rehab.dto.response;
+package com.rehab.dto.streak;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.rehab.domain.entity.UserStreak;
-import com.rehab.dto.ActivityHistoryDto;
+import com.rehab.dto.plan.ActivityHistoryDto;
 
 @Getter
 @Builder

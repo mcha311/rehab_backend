@@ -1,4 +1,4 @@
-package com.rehab.dto.response;
+package com.rehab.dto.exercise;
 
 import com.rehab.domain.entity.enums.ExerciseLogStatus;
 import lombok.AllArgsConstructor;

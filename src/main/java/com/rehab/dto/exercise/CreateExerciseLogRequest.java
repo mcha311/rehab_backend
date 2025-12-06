@@ -1,4 +1,4 @@
-package com.rehab.dto.request;
+package com.rehab.dto.exercise;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

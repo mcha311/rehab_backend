@@ -10,7 +10,7 @@ import com.rehab.domain.entity.ExerciseLog;
 import com.rehab.domain.entity.PlanItem;
 import com.rehab.domain.entity.User;
 import com.rehab.domain.repository.user.UserRepository;
-import com.rehab.dto.response.DailySummaryResponse;
+import com.rehab.dto.dailySummary.DailySummaryResponse;
 import com.rehab.domain.repository.dailySummary.DailySummaryRepository;
 import com.rehab.domain.repository.exercise.ExerciseLogRepository;
 import com.rehab.domain.repository.plan.PlanItemRepository;

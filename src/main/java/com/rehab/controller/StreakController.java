@@ -1,7 +1,7 @@
 package com.rehab.controller;
 
 import com.rehab.apiPayload.ApiResponse;
-import com.rehab.dto.response.StreakResponse;
+import com.rehab.dto.streak.StreakResponse;
 import com.rehab.service.streak.StreakService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

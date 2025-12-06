@@ -8,7 +8,7 @@ import com.rehab.apiPayload.exception.RehabPlanException;
 import com.rehab.domain.entity.Exercise;
 import com.rehab.domain.entity.ExerciseImage;
 import com.rehab.domain.entity.ExerciseMedia;
-import com.rehab.dto.response.ExerciseDetailResponse;
+import com.rehab.dto.exercise.ExerciseDetailResponse;
 import com.rehab.domain.repository.exercise.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

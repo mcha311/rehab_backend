@@ -1,9 +1,9 @@
 package com.rehab.controller;
 
 import com.rehab.apiPayload.ApiResponse;
-import com.rehab.dto.request.CreateExerciseLogRequest;
-import com.rehab.dto.response.ExerciseLogListResponse;
-import com.rehab.dto.response.ExerciseLogResponse;
+import com.rehab.dto.exercise.CreateExerciseLogRequest;
+import com.rehab.dto.exercise.ExerciseLogListResponse;
+import com.rehab.dto.exercise.ExerciseLogResponse;
 import com.rehab.service.exercise.ExerciseLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

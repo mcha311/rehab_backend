@@ -1,4 +1,4 @@
-package com.rehab.dto.response;
+package com.rehab.dto.dailySummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
