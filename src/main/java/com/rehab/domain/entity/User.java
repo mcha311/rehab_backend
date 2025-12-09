@@ -159,8 +159,7 @@ public class User extends BaseEntity {
 	 */
 	public void addSymptomIntake(SymptomIntake symptomIntake) {
 		this.symptomIntakes.add(symptomIntake);
-		// SymptomIntake 엔티티에 setUser 메서드가 있다면 설정
-		// symptomIntake.setUser(this);
+		// symptomIntake.setUser(this); //필요하면 양방향 세팅
 	}
 
 	/**
