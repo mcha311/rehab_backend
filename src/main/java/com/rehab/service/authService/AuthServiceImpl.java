@@ -1,6 +1,7 @@
 package com.rehab.service.authService;
 
 import com.rehab.apiPayload.code.status.ErrorStatus;
+import com.rehab.apiPayload.exception.CustomException;
 import com.rehab.apiPayload.exception.handler.UserHandler;
 import com.rehab.domain.entity.User;
 import com.rehab.domain.entity.enums.LoginType;
@@ -8,6 +9,7 @@ import com.rehab.domain.repository.user.UserRepository;
 import com.rehab.dto.auth.AuthRequest;
 import com.rehab.dto.auth.AuthResponse;
 import com.rehab.security.jwt.JwtTokenProvider;
+import com.rehab.service.emailService.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
-	// TODO: refreshToken Redis 저장용 서비스/유틸 추가 예정
+	private final EmailVerificationService emailVerificationService;  // ✅ 이거 추가
 
 	@Override
 	public AuthResponse.SignupResponse signup(AuthRequest.SignupRequest request) {
@@ -40,8 +42,9 @@ public class AuthServiceImpl implements AuthService {
 
 		// 3) 이메일 인증 여부 체크 (추후 Redis 연동 가능)
 		if (!emailVerificationService.isVerified(request.getEmail())) {
-			throw new CustomException(ErrorCode.EMAIL_NOT_VERIFIED);
+			throw new CustomException(ErrorStatus._BAD_REQUEST);
 		}
+
 
 
 		// 4) 비밀번호 암호화
