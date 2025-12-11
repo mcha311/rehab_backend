@@ -148,12 +148,13 @@ public class User extends BaseEntity {
 			.profileCompleted(false)
 			.build();
 	}
-	public void updateProfile(String username, Gender gender, Integer age, Double height, Double weight) {
+	public void updateProfile(String username, Gender gender, Integer age, Double height, Double weight, LocalDate birthDate) {
 		this.username = username;
 		this.gender = gender;
 		this.age = age;
 		this.height = height;
 		this.weight = weight;
+		this.birthDate = birthDate;
 		this.profileCompleted = true;
 	}
 
