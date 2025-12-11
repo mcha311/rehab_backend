@@ -48,11 +48,21 @@ public class ExerciseLogService {
 
 		// 사용자 조회
 		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new RehabPlanException(ErrorStatus.USER_NOT_FOUND));
+			.orElseThrow(() -> {
+				log.error("사용자를 찾을 수 없음 - userId: {}", userId);
+				return new RehabPlanException(ErrorStatus.USER_NOT_FOUND);
+			});
+
+		log.info("사용자 조회 성공 - userId: {}", user.getUserId());
+
+		// 플랜 항목 조회 시도
+		log.info("PlanItem 조회 시도 - planItemId: {}", request.getPlanItemId());
 
 		// 플랜 항목 조회
 		PlanItem planItem = planItemRepository.findById(request.getPlanItemId())
 			.orElseThrow(() -> new RehabPlanException(ErrorStatus.PLAN_ITEM_NOT_FOUND));
+
+		log.info("PlanItem 조회 성공 - planItemId: {}", planItem.getPlanItemId());
 
 		// 운동 로그 생성
 		ExerciseLog exerciseLog = ExerciseLog.builder()
