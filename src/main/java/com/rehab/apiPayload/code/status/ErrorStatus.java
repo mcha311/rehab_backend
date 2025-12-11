@@ -73,6 +73,9 @@ public enum ErrorStatus implements BaseErrorCode {
 	INVALID_STATUS(HttpStatus.BAD_REQUEST, "PLAN4001", "유효하지 않은 상태 값입니다."),
 	MEDICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "MEDICATION404", "복약 정보를 찾을 수 없습니다."),
 	DIET_NOT_FOUND(HttpStatus.NOT_FOUND, "DIET404", "식단 정보를 찾을 수 없습니다."),
+	DIET_PLAN_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "DIET_PLAN_ITEM404", "식단 플랜 항목을 찾을 수 없습니다."),
+
+
 	;
 
 	private final HttpStatus httpStatus;
