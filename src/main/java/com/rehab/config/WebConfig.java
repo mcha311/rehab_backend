@@ -16,7 +16,8 @@ public class WebConfig {
 				registry.addMapping("/**")
 					.allowedOrigins(
 						"http://localhost:5173",
-						"https://rehabai-xxx.vercel.app"
+						"https://rehabai-xxx.vercel.app",
+						"https://rehab-web-fe.vercel.app"
 					)
 					.allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
 					.allowCredentials(true);
