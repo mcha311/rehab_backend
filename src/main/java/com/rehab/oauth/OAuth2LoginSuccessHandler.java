@@ -11,6 +11,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -45,14 +47,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRole().toString(),null);
 		String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole().toString());
 
-		// redirect 대신 JSON 응답
-		//프론트가 나중에 만들어지면 그때 다시 redirect 코드
-		response.setContentType("application/json; charset=UTF-8");
-		String json = String.format(
-			"{\"access\":\"%s\", \"refresh\":\"%s\", \"userId\":%d}",
-			accessToken, refreshToken, user.getUserId()
-		);
+		String frontBaseUrl = "https://rehab-web-fe.vercel.app";
 
-		response.getWriter().write(json);
+		String redirectUrl = frontBaseUrl
+			+ "/oauth/success"
+			+ "?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+			+ "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
+
+		response.sendRedirect(redirectUrl);
 	}
 }
