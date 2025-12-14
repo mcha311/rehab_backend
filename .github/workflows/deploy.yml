@@ -9,7 +9,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH(원격 접속)로 EC2에 접속하기
+      - name: SSH로 EC2 접속 후 Docker 배포
         uses: appleboy/ssh-action@v1.0.3
         env:
           APPLICATION_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
@@ -25,5 +25,6 @@ jobs:
             mkdir -p src/main/resources
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
             ./gradlew clean build -x test
-            sudo fuser -k -n tcp 8080 || true
-            nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
+            docker compose down || true
+            docker compose build
+            docker compose up -d
