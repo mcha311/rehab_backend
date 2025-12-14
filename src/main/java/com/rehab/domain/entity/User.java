@@ -2,6 +2,7 @@ package com.rehab.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import com.rehab.domain.entity.enums.LoginType;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,23 +21,23 @@ import com.rehab.domain.entity.enums.UserRole;
 @Builder
 public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
+	private Long userId;
 
-    @Column(name = "username")
-    private String username;
+	@Column(name = "username")
+	private String username;
 
-    @Column(name = "email", unique = true)
-    private String email;
+	@Column(name = "email", unique = true)
+	private String email;
 
 	@Column(name = "password")
 	private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
-    private Gender gender;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "gender")
+	private Gender gender;
 
 	@Column(name = "age")
 	private Integer age;
@@ -50,21 +51,21 @@ public class User extends BaseEntity {
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private UserRole role;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role")
+	private UserRole role;
 
-    @Column(name = "current_streak")
-    private Integer currentStreak;
+	@Column(name = "current_streak")
+	private Integer currentStreak;
 
-    @Column(name = "max_streak")
-    private Integer maxStreak;
+	@Column(name = "max_streak")
+	private Integer maxStreak;
 
-    @Column(name = "last_activity_date")
-    private LocalDate lastActivityDate;
+	@Column(name = "last_activity_date")
+	private LocalDate lastActivityDate;
 
-    @Column(name = "fcm_token")
-    private String fcmToken;
+	@Column(name = "fcm_token")
+	private String fcmToken;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "login_type")
@@ -81,6 +82,12 @@ public class User extends BaseEntity {
 	@Column(name = "profile_completed")
 	private Boolean profileCompleted = false;
 
+	// ================================
+	// 주소 관계 (1:1)
+	// ================================
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private Address address;
+
 	// 연관관계
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -88,48 +95,56 @@ public class User extends BaseEntity {
 	private List<SymptomIntake> symptomIntakes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<RehabPlan> rehabPlans = new ArrayList<>();
+	@Builder.Default
+	private List<RehabPlan> rehabPlans = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ExerciseLog> exerciseLogs = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<ExerciseLog> exerciseLogs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<DailySummary> dailySummaries = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<DailySummary> dailySummaries = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<RecoveryScore> recoveryScores = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<RecoveryScore> recoveryScores = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Medication> medications = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<Medication> medications = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<MedicationLog> medicationLogs = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<MedicationLog> medicationLogs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Reminder> reminders = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<Reminder> reminders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ReportSnapshot> reportSnapshots = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<ReportSnapshot> reportSnapshots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<AiInferenceLog> aiInferenceLogs = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<AiInferenceLog> aiInferenceLogs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<AuditLog> auditLogs = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<AuditLog> auditLogs = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
 	private List<DietLog> dietLogs = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<UserFacilityFavorite> facilityFavorites = new ArrayList<>();
+
+	// ================================
+	// 비즈니스 로직
+	// ================================
 
 	public static User createEmailUser(String email, String encodedPassword) {
 		return User.builder()
@@ -141,7 +156,7 @@ public class User extends BaseEntity {
 			.build();
 	}
 
-	public static User createKakaoUser(String providerId, String email,String nickname) {
+	public static User createKakaoUser(String providerId, String email, String nickname) {
 		return User.builder()
 			.provider("kakao")
 			.providerId(providerId)
@@ -152,6 +167,7 @@ public class User extends BaseEntity {
 			.profileCompleted(false)
 			.build();
 	}
+
 	public void updateProfile(String username, Gender gender, Integer age, Double height, Double weight, LocalDate birthDate) {
 		this.username = username;
 		this.gender = gender;
@@ -163,11 +179,30 @@ public class User extends BaseEntity {
 	}
 
 	/**
+	 * 주소 설정/업데이트 (양방향 관계 설정)
+	 */
+	public void setAddress(Address address) {
+		this.address = address;
+		if (address != null && address.getUser() != this) {
+			address.setUser(this);
+		}
+	}
+
+	/**
+	 * 주소 삭제
+	 */
+	public void removeAddress() {
+		if (this.address != null) {
+			this.address.setUser(null);
+			this.address = null;
+		}
+	}
+
+	/**
 	 * 문진 정보 추가
 	 */
 	public void addSymptomIntake(SymptomIntake symptomIntake) {
 		this.symptomIntakes.add(symptomIntake);
-		// symptomIntake.setUser(this); //필요하면 양방향 세팅
 	}
 
 	/**
@@ -195,5 +230,30 @@ public class User extends BaseEntity {
 	 */
 	public boolean hasIntakeHistory() {
 		return !symptomIntakes.isEmpty();
+	}
+
+	/**
+	 * 주소가 등록되어 있는지 확인
+	 */
+	public boolean hasAddress() {
+		return this.address != null;
+	}
+
+	/**
+	 * 즐겨찾기 운동 시설 추가
+	 */
+	public void addFacilityFavorite(UserFacilityFavorite favorite) {
+		this.facilityFavorites.add(favorite);
+		if (favorite.getUser() != this) {
+			favorite.setUser(this);
+		}
+	}
+
+	/**
+	 * 즐겨찾기 운동 시설 삭제
+	 */
+	public void removeFacilityFavorite(UserFacilityFavorite favorite) {
+		this.facilityFavorites.remove(favorite);
+		favorite.setUser(null);
 	}
 }
