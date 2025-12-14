@@ -25,6 +25,8 @@ jobs:
             mkdir -p src/main/resources
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
             ./gradlew clean build -x test
-            docker compose down || true
+            docker compose down --remove-orphans || true
+            docker rm -f rehab-server || true
             docker compose build
             docker compose up -d
+            docker image prune -f
