@@ -1,6 +1,7 @@
 package com.rehab.controller;
 
 import com.rehab.apiPayload.ApiResponse;
+import com.rehab.domain.entity.User;
 import com.rehab.dto.streak.StreakResponse;
 import com.rehab.service.streak.StreakService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,8 +9,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/streak")
 @RequiredArgsConstructor
 @Tag(name = "7. Streak & RecoveryScore", description = "Streak 및 회복 점수 관리 API")
+@SecurityRequirement(name = "bearerAuth")
 public class StreakController {
 
 	private final StreakService streakService;
@@ -27,7 +31,7 @@ public class StreakController {
 	@Operation(
 		summary = "Streak 상세 조회",
 		description = """
-            사용자의 연속 달성(Streak) 정보를 조회합니다.
+            사용자의 연속 달성(Streak) 정보를 조회합니다. 인증된 사용자 정보를 자동으로 추출합니다.
 
             **활동 기준:**
             - 운동 완료율 ≥ 60% OR 복약 완료율 ≥ 70%
@@ -55,13 +59,7 @@ public class StreakController {
 		)
 	})
 	public ApiResponse<StreakResponse> getStreak(
-		@Parameter(
-			description = "사용자 ID",
-			required = true,
-			example = "1"
-		)
-		@RequestParam Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(
 			description = "조회할 최근 일수 (기본값: 30일, 최대: 90일)",
 			example = "30"
@@ -71,7 +69,7 @@ public class StreakController {
 		// range 제한 (최대 90일)
 		int rangeDays = Math.min(range, 90);
 
-		StreakResponse response = streakService.getStreak(userId, rangeDays);
+		StreakResponse response = streakService.getStreak(user.getUserId(), rangeDays);
 		return ApiResponse.onSuccess(response);
 	}
 
