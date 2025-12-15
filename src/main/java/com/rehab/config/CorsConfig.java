@@ -23,14 +23,19 @@ public class CorsConfig {
 			"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
 		));
 
-		config.setAllowedHeaders(List.of("*"));
+		config.setAllowedHeaders(List.of(
+			"Authorization", "Content-Type", "Accept"
+		));
+
+		config.setExposedHeaders(List.of(
+			"Authorization"
+		));
+
 		config.setAllowCredentials(true);
 		config.setMaxAge(3600L);
 
 		UrlBasedCorsConfigurationSource source =
 			new UrlBasedCorsConfigurationSource();
-
-		// 전체 경로 적용
 		source.registerCorsConfiguration("/**", config);
 
 		return source;
