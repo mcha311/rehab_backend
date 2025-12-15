@@ -44,7 +44,7 @@ public class AuthController {
 	) {
 		return ApiResponse.onSuccess(authService.login(request));
 	}
-	@PostMapping("/auth/email/send")
+	@PostMapping("/email/send")
 	public ApiResponse<?> sendEmailCode(@RequestBody EmailRequest.Send request) {
 
 		String code = codeGenerator.generate6DigitCode();
@@ -56,7 +56,7 @@ public class AuthController {
 	}
 
 
-	@PostMapping("/auth/email/verify")
+	@PostMapping("/email/verify")
 	public ApiResponse<?> verifyEmailCode(@RequestBody EmailRequest.Verify request) {
 
 		String saved = emailVerificationService.getVerificationCode(request.getEmail());
