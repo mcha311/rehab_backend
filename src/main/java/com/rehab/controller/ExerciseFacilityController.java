@@ -1,6 +1,7 @@
 package com.rehab.controller;
 
 import com.rehab.apiPayload.ApiResponse;
+import com.rehab.domain.entity.User;
 import com.rehab.domain.entity.enums.FacilityType;
 import com.rehab.dto.exercise.facility.AddFavoriteRequest;
 import com.rehab.dto.exercise.facility.FacilityDetailResponse;
@@ -12,9 +13,11 @@ import com.rehab.service.exercise.ExerciseFacilityService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +30,7 @@ import java.util.List;
 @RequestMapping("/api/v1/facilities")
 @RequiredArgsConstructor
 @Tag(name = "운동 시설", description = "주변 운동 시설 조회 및 즐겨찾기 API")
+@SecurityRequirement(name = "bearerAuth")
 public class ExerciseFacilityController {
 
 	private final ExerciseFacilityService facilityService;
@@ -35,11 +39,9 @@ public class ExerciseFacilityController {
 	 * 주변 시설 검색
 	 */
 	@GetMapping("/nearby")
-	@Operation(summary = "주변 시설 검색", description = "사용자 주소 기준 반경 내 운동 시설을 검색합니다.")
+	@Operation(summary = "주변 시설 검색", description = "사용자 주소 기준 반경 내 운동 시설을 검색합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<List<FacilitySearchResponse>> searchNearbyFacilities(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "검색 반경 (km)", example = "5.0")
 		@RequestParam(value = "radius", defaultValue = "5.0") Double radiusKm,
 
@@ -47,10 +49,10 @@ public class ExerciseFacilityController {
 		@RequestParam(value = "types", required = false) List<FacilityType> facilityTypes
 	) {
 		log.info("API 호출: 주변 시설 검색 - userId: {}, radius: {}km, types: {}",
-			userId, radiusKm, facilityTypes);
+			user.getUserId(), radiusKm, facilityTypes);
 
 		List<FacilitySearchResponse> results =
-			facilityService.searchNearbyFacilities(userId, radiusKm, facilityTypes);
+			facilityService.searchNearbyFacilities(user.getUserId(), radiusKm, facilityTypes);
 
 		return ApiResponse.onSuccess(results);
 	}
@@ -59,18 +61,16 @@ public class ExerciseFacilityController {
 	 * 재활에 적합한 시설 검색
 	 */
 	@GetMapping("/nearby/rehab")
-	@Operation(summary = "재활 적합 시설 검색", description = "재활에 적합한 시설만 검색합니다.")
+	@Operation(summary = "재활 적합 시설 검색", description = "재활에 적합한 시설만 검색합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<List<FacilitySearchResponse>> searchRehabFacilities(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "검색 반경 (km)", example = "10.0")
 		@RequestParam(value = "radius", defaultValue = "10.0") Double radiusKm
 	) {
-		log.info("API 호출: 재활 시설 검색 - userId: {}, radius: {}km", userId, radiusKm);
+		log.info("API 호출: 재활 시설 검색 - userId: {}, radius: {}km", user.getUserId(), radiusKm);
 
 		List<FacilitySearchResponse> results =
-			facilityService.searchRehabSuitableFacilities(userId, radiusKm);
+			facilityService.searchRehabSuitableFacilities(user.getUserId(), radiusKm);
 
 		return ApiResponse.onSuccess(results);
 	}
@@ -79,18 +79,16 @@ public class ExerciseFacilityController {
 	 * 공공 시설 검색
 	 */
 	@GetMapping("/nearby/public")
-	@Operation(summary = "공공 시설 검색", description = "무료/저렴한 공공 시설만 검색합니다.")
+	@Operation(summary = "공공 시설 검색", description = "무료/저렴한 공공 시설만 검색합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<List<FacilitySearchResponse>> searchPublicFacilities(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "검색 반경 (km)", example = "5.0")
 		@RequestParam(value = "radius", defaultValue = "5.0") Double radiusKm
 	) {
-		log.info("API 호출: 공공 시설 검색 - userId: {}, radius: {}km", userId, radiusKm);
+		log.info("API 호출: 공공 시설 검색 - userId: {}, radius: {}km", user.getUserId(), radiusKm);
 
 		List<FacilitySearchResponse> results =
-			facilityService.searchPublicFacilities(userId, radiusKm);
+			facilityService.searchPublicFacilities(user.getUserId(), radiusKm);
 
 		return ApiResponse.onSuccess(results);
 	}
@@ -99,17 +97,15 @@ public class ExerciseFacilityController {
 	 * 시설 상세 조회
 	 */
 	@GetMapping("/{facilityId}")
-	@Operation(summary = "시설 상세 조회", description = "특정 시설의 상세 정보를 조회합니다.")
+	@Operation(summary = "시설 상세 조회", description = "특정 시설의 상세 정보를 조회합니다. 인증된 사용자 정보를 자동으로 추출하여 즐겨찾기 여부를 확인합니다.")
 	public ApiResponse<FacilityDetailResponse> getFacilityDetail(
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "시설 ID", required = true)
-		@PathVariable Long facilityId,
-
-		@Parameter(description = "사용자 ID (즐겨찾기 여부 확인용)")
-		@RequestParam(value = "userId", required = false) Long userId
+		@PathVariable Long facilityId
 	) {
-		log.info("API 호출: 시설 상세 조회 - facilityId: {}, userId: {}", facilityId, userId);
+		log.info("API 호출: 시설 상세 조회 - facilityId: {}, userId: {}", facilityId, user.getUserId());
 
-		FacilityDetailResponse result = facilityService.getFacilityDetail(facilityId, userId);
+		FacilityDetailResponse result = facilityService.getFacilityDetail(facilityId, user.getUserId());
 
 		return ApiResponse.onSuccess(result);
 	}
@@ -118,11 +114,9 @@ public class ExerciseFacilityController {
 	 * 시설 유형별 검색
 	 */
 	@GetMapping("/by-type/{facilityType}")
-	@Operation(summary = "시설 유형별 검색", description = "특정 유형의 시설만 검색합니다.")
+	@Operation(summary = "시설 유형별 검색", description = "특정 유형의 시설만 검색합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<List<FacilitySearchResponse>> searchByType(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "시설 유형", required = true)
 		@PathVariable FacilityType facilityType,
 
@@ -130,10 +124,10 @@ public class ExerciseFacilityController {
 		@RequestParam(value = "radius", defaultValue = "5.0") Double radiusKm
 	) {
 		log.info("API 호출: 시설 유형별 검색 - userId: {}, type: {}, radius: {}km",
-			userId, facilityType, radiusKm);
+			user.getUserId(), facilityType, radiusKm);
 
 		List<FacilitySearchResponse> results =
-			facilityService.searchByType(userId, facilityType, radiusKm);
+			facilityService.searchByType(user.getUserId(), facilityType, radiusKm);
 
 		return ApiResponse.onSuccess(results);
 	}
@@ -162,17 +156,15 @@ public class ExerciseFacilityController {
 	 * 즐겨찾기 추가
 	 */
 	@PostMapping("/favorites")
-	@Operation(summary = "즐겨찾기 추가", description = "시설을 즐겨찾기에 추가합니다.")
+	@Operation(summary = "즐겨찾기 추가", description = "시설을 즐겨찾기에 추가합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<Void> addFavorite(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@RequestBody AddFavoriteRequest request
 	) {
 		log.info("API 호출: 즐겨찾기 추가 - userId: {}, facilityId: {}",
-			userId, request.getFacilityId());
+			user.getUserId(), request.getFacilityId());
 
-		facilityService.addFavorite(userId, request.getFacilityId(), request.getMemo());
+		facilityService.addFavorite(user.getUserId(), request.getFacilityId(), request.getMemo());
 
 		return ApiResponse.onSuccess(null);
 	}
@@ -181,14 +173,13 @@ public class ExerciseFacilityController {
 	 * 즐겨찾기 목록 조회
 	 */
 	@GetMapping("/favorites")
-	@Operation(summary = "즐겨찾기 목록 조회", description = "사용자의 즐겨찾기 시설 목록을 조회합니다.")
+	@Operation(summary = "즐겨찾기 목록 조회", description = "사용자의 즐겨찾기 시설 목록을 조회합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<List<FacilityFavoriteResponse>> getFavorites(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId
+		@AuthenticationPrincipal User user
 	) {
-		log.info("API 호출: 즐겨찾기 목록 조회 - userId: {}", userId);
+		log.info("API 호출: 즐겨찾기 목록 조회 - userId: {}", user.getUserId());
 
-		List<FacilityFavoriteResponse> results = facilityService.getFavorites(userId);
+		List<FacilityFavoriteResponse> results = facilityService.getFavorites(user.getUserId());
 
 		return ApiResponse.onSuccess(results);
 	}
@@ -197,17 +188,15 @@ public class ExerciseFacilityController {
 	 * 즐겨찾기 삭제
 	 */
 	@DeleteMapping("/favorites/{favoriteId}")
-	@Operation(summary = "즐겨찾기 삭제", description = "즐겨찾기에서 시설을 삭제합니다.")
+	@Operation(summary = "즐겨찾기 삭제", description = "즐겨찾기에서 시설을 삭제합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<Void> removeFavorite(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "즐겨찾기 ID", required = true)
 		@PathVariable Long favoriteId
 	) {
-		log.info("API 호출: 즐겨찾기 삭제 - userId: {}, favoriteId: {}", userId, favoriteId);
+		log.info("API 호출: 즐겨찾기 삭제 - userId: {}, favoriteId: {}", user.getUserId(), favoriteId);
 
-		facilityService.removeFavorite(userId, favoriteId);
+		facilityService.removeFavorite(user.getUserId(), favoriteId);
 
 		return ApiResponse.onSuccess(null);
 	}
@@ -216,20 +205,18 @@ public class ExerciseFacilityController {
 	 * 즐겨찾기 메모 수정
 	 */
 	@PatchMapping("/favorites/{favoriteId}/memo")
-	@Operation(summary = "즐겨찾기 메모 수정", description = "즐겨찾기 시설의 메모를 수정합니다.")
+	@Operation(summary = "즐겨찾기 메모 수정", description = "즐겨찾기 시설의 메모를 수정합니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<Void> updateFavoriteMemo(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "즐겨찾기 ID", required = true)
 		@PathVariable Long favoriteId,
 
 		@RequestBody UpdateFavoriteMemoRequest request
 	) {
 		log.info("API 호출: 즐겨찾기 메모 수정 - userId: {}, favoriteId: {}",
-			userId, favoriteId);
+			user.getUserId(), favoriteId);
 
-		facilityService.updateFavoriteMemo(userId, favoriteId, request.getMemo());
+		facilityService.updateFavoriteMemo(user.getUserId(), favoriteId, request.getMemo());
 
 		return ApiResponse.onSuccess(null);
 	}
@@ -238,25 +225,16 @@ public class ExerciseFacilityController {
 	 * 즐겨찾기 방문 기록
 	 */
 	@PostMapping("/favorites/{favoriteId}/visit")
-	@Operation(summary = "방문 기록", description = "즐겨찾기 시설의 방문 횟수를 증가시킵니다.")
+	@Operation(summary = "방문 기록", description = "즐겨찾기 시설의 방문 횟수를 증가시킵니다. 인증된 사용자 정보를 자동으로 추출합니다.")
 	public ApiResponse<Void> recordVisit(
-		@Parameter(description = "사용자 ID", required = true)
-		@RequestParam("userId") Long userId,
-
+		@AuthenticationPrincipal User user,
 		@Parameter(description = "즐겨찾기 ID", required = true)
 		@PathVariable Long favoriteId
 	) {
-		log.info("API 호출: 방문 기록 - userId: {}, favoriteId: {}", userId, favoriteId);
+		log.info("API 호출: 방문 기록 - userId: {}, favoriteId: {}", user.getUserId(), favoriteId);
 
-		facilityService.recordVisit(userId, favoriteId);
+		facilityService.recordVisit(user.getUserId(), favoriteId);
 
 		return ApiResponse.onSuccess(null);
 	}
 }
-
-
-
-
-
-
-
