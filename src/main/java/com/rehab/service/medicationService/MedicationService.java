@@ -14,8 +14,6 @@ public interface MedicationService {
 
 	MedicationDto.ScheduleResponse addSchedule(Long medicationId, MedicationDto.ScheduleRequest request);
 
-	MedicationDto.MedicationLogResponse recordLog(Long medicationId, MedicationDto.LogRequest request);
-
 	MedicationDto.Response updateMedication(User user, Long medicationId, MedicationDto.UpdateRequest request);
 
 	MedicationDto.DailyScheduleResponse getSchedulesForDate(User user, LocalDate date);
