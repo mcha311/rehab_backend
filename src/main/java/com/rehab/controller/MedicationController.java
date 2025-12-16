@@ -5,6 +5,8 @@ import com.rehab.domain.entity.User;
 import com.rehab.dto.medication.MedicationDto;
 import com.rehab.service.medicationService.MedicationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +25,13 @@ public class MedicationController {
 
 	@PostMapping
 	@Operation(summary = "복약 등록")
+	@io.swagger.v3.oas.annotations.responses.ApiResponse(
+		responseCode = "200",
+		description = "복약 등록 성공",
+		content = @Content(
+			schema = @Schema(implementation = MedicationDto.Response.class)
+		)
+	)
 	public ApiResponse<MedicationDto.Response> createMedication(
 		@AuthenticationPrincipal User user,
 		@RequestBody MedicationDto.CreateRequest request
