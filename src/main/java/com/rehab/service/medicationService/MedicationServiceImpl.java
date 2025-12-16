@@ -144,33 +144,33 @@ public class MedicationServiceImpl implements MedicationService {
 			.build();
 	}
 
-
-
-	@Override
-	public MedicationDto.MedicationLogResponse recordLog(Long medicationId, MedicationDto.LogRequest request) {
-
-		Medication medication = medicationRepository.findById(medicationId)
-			.orElseThrow(() -> new UserHandler(ErrorStatus._BAD_REQUEST));
-
-		MedicationLog log = MedicationLog.builder()
-			.user(medication.getUser())
-			.medication(medication)
-			.timeOfDay(request.getTimeOfDay())
-			.taken(request.getTaken())
-			.notes(request.getNotes())
-			.takenAt(LocalDateTime.now())
-			.build();
-
-		logRepository.save(log);
-
-		return MedicationDto.MedicationLogResponse.builder()
-			.logId(log.getMedicationLogId())
-			.timeOfDay(log.getTimeOfDay())
-			.taken(log.getTaken())
-			.notes(log.getNotes())
-			.takenAt(log.getTakenAt())
-			.build();
-	}
+//
+//
+//	@Override
+//	public MedicationDto.MedicationLogResponse recordLog(Long medicationId, MedicationDto.LogRequest request) {
+//
+//		Medication medication = medicationRepository.findById(medicationId)
+//			.orElseThrow(() -> new UserHandler(ErrorStatus._BAD_REQUEST));
+//
+//		MedicationLog log = MedicationLog.builder()
+//			.user(medication.getUser())
+//			.medication(medication)
+//			.timeOfDay(request.getTimeOfDay())
+//			.taken(request.getTaken())
+//			.notes(request.getNotes())
+//			.takenAt(LocalDateTime.now())
+//			.build();
+//
+//		logRepository.save(log);
+//
+//		return MedicationDto.MedicationLogResponse.builder()
+//			.logId(log.getMedicationLogId())
+//			.timeOfDay(log.getTimeOfDay())
+//			.taken(log.getTaken())
+//			.notes(log.getNotes())
+//			.takenAt(log.getTakenAt())
+//			.build();
+//	}
 
 	private MedicationDto.Response toResponse(Medication med) {
 		return MedicationDto.Response.builder()
@@ -181,27 +181,27 @@ public class MedicationServiceImpl implements MedicationService {
 			.instructions(med.getInstructions())
 			.description(med.getDescription())
 			.status(med.getStatus())
-			.schedules(
-				med.getMediSchedules().stream()
-					.map(s -> MedicationDto.ScheduleResponse.builder()
-						.scheduleId(s.getMediScheduleId())
-						.timeOfDay(s.getTimeOfDay())
-						.notify(s.getNotify())
-						.rrule(s.getRrule())
-						.build())
-					.toList()
-			)
-			.logs(
-				med.getMedicationLogs().stream()
-					.map(l -> MedicationDto.MedicationLogResponse.builder()
-						.logId(l.getMedicationLogId())
-						.timeOfDay(l.getTimeOfDay())
-						.taken(l.getTaken())
-						.notes(l.getNotes())
-						.takenAt(l.getTakenAt())
-						.build())
-					.toList()
-			)
+//			.schedules(
+//				med.getMediSchedules().stream()
+//					.map(s -> MedicationDto.ScheduleResponse.builder()
+//						.scheduleId(s.getMediScheduleId())
+//						.timeOfDay(s.getTimeOfDay())
+//						.notify(s.getNotify())
+//						.rrule(s.getRrule())
+//						.build())
+//					.toList()
+//			)
+//			.logs(
+//				med.getMedicationLogs().stream()
+//					.map(l -> MedicationDto.MedicationLogResponse.builder()
+//						.logId(l.getMedicationLogId())
+//						.timeOfDay(l.getTimeOfDay())
+//						.taken(l.getTaken())
+//						.notes(l.getNotes())
+//						.takenAt(l.getTakenAt())
+//						.build())
+//					.toList()
+//			)
 			.build();
 	}
 }

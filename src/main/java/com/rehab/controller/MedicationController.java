@@ -60,15 +60,6 @@ public class MedicationController {
 	}
 
 
-	@PostMapping("/{medicationId}/log")
-	@Operation(summary = "복약 기록 추가")
-	public ApiResponse<MedicationDto.MedicationLogResponse> recordLog(
-		@PathVariable Long medicationId,
-		@RequestBody MedicationDto.LogRequest request
-	) {
-		return ApiResponse.onSuccess(medicationService.recordLog(medicationId, request));
-	}
-
 	@GetMapping("/schedules")
 	@Operation(summary = "특정 날짜 복약 스케줄 조회")
 	public ApiResponse<MedicationDto.DailyScheduleResponse> getSchedulesForDate(
