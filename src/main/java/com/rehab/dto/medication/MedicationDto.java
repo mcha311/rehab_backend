@@ -30,8 +30,7 @@ public class MedicationDto {
 		private String instructions;
 		private String description;
 		private MedicationStatus status;
-		private List<ScheduleResponse> schedules;
-		private List<MedicationLogResponse> logs;
+
 	}
 
 	// 스케줄
@@ -50,23 +49,23 @@ public class MedicationDto {
 		private String rrule;
 	}
 
-	// 복약 로그 기록 요청
-	@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-	public static class LogRequest {
-		private TimeOfDay timeOfDay;
-		private Boolean taken;
-		private String notes;
-	}
-
-	// 복약 로그 응답
-	@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-	public static class MedicationLogResponse {
-		private Long logId;
-		private TimeOfDay timeOfDay;
-		private Boolean taken;
-		private String notes;
-		private LocalDateTime takenAt;
-	}
+//	// 복약 로그 기록 요청
+//	@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+//	public static class LogRequest {
+//		private TimeOfDay timeOfDay;
+//		private Boolean taken;
+//		private String notes;
+//	}
+//
+//	// 복약 로그 응답
+//	@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+//	public static class MedicationLogResponse {
+//		private Long logId;
+//		private TimeOfDay timeOfDay;
+//		private Boolean taken;
+//		private String notes;
+//		private LocalDateTime takenAt;
+//	}
 
 	@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 	public static class UpdateRequest {
