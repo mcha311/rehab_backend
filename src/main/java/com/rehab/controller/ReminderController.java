@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reminders")
+@RequestMapping("/api/v1/reminders")
 @Tag(name = "Reminder", description = "알림 관리 API")
 public class ReminderController {
 

@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/me/intake")
+@RequestMapping("/api/v1/users/me/intake")
 @RequiredArgsConstructor
 @Tag(name = "Intake", description = "문진 정보 API")
 public class IntakeController {
