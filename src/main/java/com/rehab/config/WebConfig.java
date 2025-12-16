@@ -19,8 +19,10 @@ public class WebConfig {
 						"https://rehabai-xxx.vercel.app",
 						"https://rehab-web-fe.vercel.app"
 					)
-					.allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
-					.allowCredentials(true);
+					.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+					.allowedHeaders("*")
+					.allowCredentials(true)
+					.maxAge(3600);
 			}
 		};
 	}
