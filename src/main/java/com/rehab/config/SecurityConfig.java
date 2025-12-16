@@ -59,12 +59,23 @@ public class SecurityConfig {
 				.anyRequest().authenticated()
 			)
 			.oauth2Login(oauth2 -> oauth2
-					.loginPage("/oauth2/authorization/kakao")
-					//.failureUrl("/auth/login-failure")
-					.userInfoEndpoint(userInfo -> {
-							userInfo.userService(customOAuth2UserService);
-						})
-						.successHandler(oAuth2LoginSuccessHandler)
+				.loginPage("/oauth2/authorization/kakao")
+				//.failureUrl("/auth/login-failure")
+				.userInfoEndpoint(userInfo -> {
+					userInfo.userService(customOAuth2UserService);
+				})
+				.successHandler(oAuth2LoginSuccessHandler)
+			)
+			// 인증 실패 시 401 JSON 응답 반환 (HTTP 리다이렉트 방지)
+			.exceptionHandling(exception -> exception
+				.authenticationEntryPoint((request, response, authException) -> {
+					response.setStatus(401);
+					response.setContentType("application/json;charset=UTF-8");
+					response.getWriter().write(
+						"{\"isSuccess\":false,\"code\":\"AUTH_001\"," +
+							"\"message\":\"인증이 필요합니다.\",\"result\":null}"
+					);
+				})
 			)
 			.httpBasic(httpBasic -> httpBasic.disable())
 			.formLogin(form -> form.disable())
