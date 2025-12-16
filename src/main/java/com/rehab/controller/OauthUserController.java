@@ -18,7 +18,7 @@ public class OauthUserController {
 
 	private final UserService userService;
 
-	@GetMapping("/user/me")
+	@GetMapping("/users/me")
 	@Operation(summary = "내 정보 조회", description = "JWT 기반 현재 로그인한 유저의 프로필 조회")
 	public ApiResponse<UserProfileDto.ProfileResponse> getMyProfile(
 		@AuthenticationPrincipal User user
@@ -26,7 +26,7 @@ public class OauthUserController {
 		return ApiResponse.onSuccess(userService.getMyProfile(user));
 	}
 
-	@PostMapping("/user/me")
+	@PostMapping("/users/me")
 	@Operation(summary = "프로필 최초 생성", description = "회원가입 직후 프로필 최초 생성용 API")
 	public ApiResponse<UserProfileDto.ProfileResponse> createMyProfile(
 		@AuthenticationPrincipal User user,
@@ -35,7 +35,7 @@ public class OauthUserController {
 		return ApiResponse.onSuccess(userService.updateMyProfile(user, request));
 	}
 
-	@PatchMapping("/user/me")
+	@PatchMapping("/users/me")
 	@Operation(summary = "내 프로필 수정", description = "이름/성별/나이/키/몸무게 수정")
 	public ApiResponse<UserProfileDto.ProfileResponse> updateMyProfile(
 		@AuthenticationPrincipal User user,
